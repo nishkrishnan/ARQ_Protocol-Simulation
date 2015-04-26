@@ -1,0 +1,32 @@
+# Local variables
+BER=0
+RNDTRIP=10
+NAK=false
+TYPE=GBN
+DATAFP=../Data/GBN.csv
+CODEFP=../
+
+# Compile Source Code
+cd ..
+make
+
+# Remove csv if it exists
+cd Scripts/
+rm  $DATAFP
+
+for ((j = 25; j < 126; j+=25))
+do  
+	
+	DTFACT=$(echo "scale=2; ($j/10.0)" | bc)
+	for BER in 0.0 0.00001 0.0001
+		do
+		$CODEFP./RUNSIM $BER $DTFACT 10 $NAK $TYPE >>  $DATAFP
+		printf "," >>  $DATAFP
+	done
+	for BER in 0.0 0.00001 0.0001
+		do
+		$CODEFP./RUNSIM $BER $DTFACT 500 $NAK $TYPE >>  $DATAFP
+		printf "," >>  $DATAFP
+	done
+	printf "\n" >>  $DATAFP
+done
